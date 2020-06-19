@@ -23,6 +23,17 @@ variable "slurm_gcp_tags" {
   default = []
 }
 
+variable "project" {
+  type = string
+  description = "Main GCP project ID for the customer's managed solution"
+}
+
+variable "region" {
+  type = string
+  description = "Primary GCP region for customer's managed solution"
+}
+
+
 variable "controller" { 
   type = object({
       machine_type = string
@@ -99,4 +110,15 @@ variable "munge_key" {
 variable "suspend_time" {
   type = number
   default = 300
+}
+
+variable "subnet_regions" {
+  type = list(object({
+    name = string
+    cidr = string
+    description = string
+    region = string
+  }))
+  default = []
+  description = "List-object defining the available VPC subnetworks. These subnetworks are created in the shared_vpc_host_project."
 }
