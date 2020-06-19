@@ -55,19 +55,6 @@ variable "login" {
   }))
 }
 
-variable "mounts" {
-  type = list(object({
-      group = string
-      mount_directory = string
-      mount_options = string
-      owner = string
-      protocol = string
-      permission = string
-      server_directory = string
-  }))
-  default = []
-}
-
 variable "partitions" {
   type = list(object({
       name = string
@@ -113,18 +100,3 @@ variable "suspend_time" {
   type = number
   default = 300
 }
-
-
-variable "filestore" {
-  type = list(object({
-      name = string
-      zone = string
-      tier = string
-      project = string
-      capacity_gb = string
-      network = string
-      mount = string
-      share = string
-  }))
-}
-     

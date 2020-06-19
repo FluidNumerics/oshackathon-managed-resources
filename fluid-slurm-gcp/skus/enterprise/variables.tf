@@ -23,6 +23,11 @@ variable "slurm_gcp_tags" {
   default = []
 }
 
+variable "vpc_network" {
+  type = string
+  description = "Self link for the Shared VPC network hosting the cluster"
+}
+
 variable "controller" { 
   type = object({
       machine_type = string
@@ -114,17 +119,22 @@ variable "suspend_time" {
   default = 300
 }
 
-
-variable "filestore" {
-  type = list(object({
-      name = string
-      zone = string
-      tier = string
-      project = string
-      capacity_gb = string
-      network = string
-      mount = string
-      share = string
-  }))
+variable "home_capacity_gb" {
+  type = number
+  default = 2048
 }
-     
+
+variable "home_tier" {
+  type = string
+  default = "STANDARD"
+}
+
+variable "share_capacity_gb" {
+  type = number
+  default = 0
+}
+
+variable "share_tier" {
+  type = string
+  default = "STANDARD"
+}
