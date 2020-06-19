@@ -1,69 +1,39 @@
-variable "parent_folder" {
+variable "customer_folder" {
   type = string
   default = ""
   description = "A GCP folder id (folders/FOLDER-ID) that contains the Fluid-Slurm-GCP controller project and compute partition projects."
 }
 
-variable "slurm_gcp_admins" {
-  type = list(string)
-  description = "List of users or groups to provide slurm-gcp admin role"
-}
-
-variable "slurm_gcp_users" {
-  type = list(string)
-  description = "List of users or groups to provide slurm-gcp user role"
-}
-
-variable "slurm_gcp_name" {
+variable "customer_org_id" {
   type = string
+  description = "Customer organization ID from the managed-fluid-slurm-gcp customers database"
 }
 
-variable "slurm_gcp_tags" { 
-  type = list(string)
-  default = []
+variable "managing_domain" {
+  type = string
+  description = "The registered GSuite domain used to host Fluid-Slurm-GCP Cloud Identity Accounts"
+  default = "fluidnumerics.com"
 }
 
-variable "project" {
+variable "primary_project" {
   type = string
   description = "Main GCP project ID for the customer's managed solution"
 }
 
-variable "region" {
+variable "controller_machine_type" { 
   type = string
-  description = "Primary GCP region for customer's managed solution"
-}
-
-
-variable "controller" { 
-  type = object({
-      machine_type = string
-      disk_size_gb = number
-      disk_type = string
-      labels = map(string)
-      project = string
-      region = string
-      vpc_subnet = string
-      zone = string
-  })
+  description = "GCP Machine type to use for the login node."
 }
 
 variable "default_partition" {
   type = string
   description = "Name of the default compute partition."
-  default = "default"
+  default = ""
 }
 
-variable "login" {
-  type= list(object({
-      machine_type = string
-      disk_size_gb = number
-      disk_type = string
-      labels = map(string)
-      project = string
-      region = string
-      vpc_subnet = string
-      zone = string
-  }))
+variable "login_machine_type" {
+  type = string
+  description = "GCP Machine type to use for the login node."
 }
 
 variable "partitions" {
@@ -91,6 +61,7 @@ variable "partitions" {
         zone= string    
       }))
   }))
+  default = []
 }
 
 variable "slurm_accounts" {
@@ -110,15 +81,4 @@ variable "munge_key" {
 variable "suspend_time" {
   type = number
   default = 300
-}
-
-variable "subnet_regions" {
-  type = list(object({
-    name = string
-    cidr = string
-    description = string
-    region = string
-  }))
-  default = []
-  description = "List-object defining the available VPC subnetworks. These subnetworks are created in the shared_vpc_host_project."
 }
