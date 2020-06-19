@@ -15,6 +15,7 @@ locals {
   primary_region = trimsuffix(var.primary_zone,substr(var.primary_zone,-2,-2))
   slurm_gcp_admins = ["group:${var.customer_org_id}-slurm-gcp-admins@${var.managing_domain}"]
   slurm_gcp_users = ["group:${var.customer_org_id}-slurm-gcp-users@${var.managing_domain}"]
+  slurm_gcp_name = "${var.customer_org_id}-slurm"
 }
 
 // Mark the Controller project as the Shared VPC Host Project
@@ -37,25 +38,25 @@ resource "google_compute_shared_vpc_service_project" "service" {
 
 // Create the Shared VPC Network
 resource "google_compute_network" "shared_vpc_network" {
-  name = "${var.slurm_gcp_name}-shared-network"
+  name = "${local.slurm_gcp_name}-shared-network"
   project = var.primary_project
   auto_create_subnetworks = false
   depends_on = [google_compute_shared_vpc_host_project.host]
 }
 
 resource "google_compute_subnetwork" "default_subnet" {
-  name = "${var.slurm_gcp_name}-controller-subnet"
+  name = "${local.slurm_gcp_name}-controller-subnet"
   description = "Primary subnet for the controller"
   ip_cidr_range = "10.10.0.0/16"
-  region = var.controller.region
+  region = local.primary_region
   network = google_compute_network.shared_vpc_network.self_link
 }
 
 resource "google_compute_firewall" "default_internal_firewall_rules" {
-  name = "${var.slurm_gcp_name}-all-internal"
+  name = "${local.slurm_gcp_name}-all-internal"
   network = google_compute_network.shared_vpc_network.self_link
-  source_tags = var.slurm_gcp_tags
-  target_tags = var.slurm_gcp_tags
+  source_tags = [local.slurm_gcp_name]
+  target_tags = [local.slurm_gcp_name]
 
   allow {
     protocol = "tcp"
@@ -72,15 +73,12 @@ resource "google_compute_firewall" "default_internal_firewall_rules" {
 
 }
 
-locals {
-  source_ranges = length(var.source_ranges) == 0 ? ["0.0.0.0/0"] : var.source_ranges
-}
 
 resource "google_compute_firewall" "default_ssh_firewall_rules" {
-  name = "${var.slurm_gcp_name}-ssh"
+  name = "${local.slurm_gcp_name}-ssh"
   network = google_compute_network.shared_vpc_network.self_link
-  target_tags = var.slurm_gcp_tags
-  source_ranges = local.source_ranges
+  target_tags = [local.slurm_gcp_name]
+  source_ranges = var.whitelist_ssh_ips
 
   allow {
     protocol = "tcp"
@@ -97,8 +95,8 @@ locals {
 // Create any additional shared VPC subnetworks
 resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
   count = length(local.regions)
-  name = "${var.slurm_gcp_name}-${var.regions[count.index]}"
-  ip_cidr_range = cidrsubnet("10.10.0.0/12", 4, count.index) 
+  name = "${local.slurm_gcp_name}-${local.regions[count.index]}"
+  ip_cidr_range = cidrsubnet("10.11.0.0/12", 4, count.index) 
   region = local.regions[count.index]
   network = google_compute_network.shared_vpc_network.self_link
 }
@@ -126,16 +124,45 @@ locals {
     vpc_subnet = google_compute_subnetwork.default_subnet.self_link
     zone = var.primary_zone
   }]
+  
+  partitions = length(var.partitions) != 0 ? var.partitions : [{ name = "basic"
+                                                                 project = var.primary_project
+                                                                 max_time = "8:00:00"
+                                                                 labels = {"slurm-gcp"="compute"}
+                                                                 machines = [{ name = "basic"
+                                                                               disk_size_gb = 15
+                                                                               disk_type = "pd-standard"
+                                                                               disable_hyperthreading = false
+                                                                               external_ip = false
+                                                                               gpu_count = 0
+                                                                               gpu_type = ""
+                                                                               n_local_ssds = 0
+                                                                               image = ""
+                                                                               local_ssd_mount_directory = "/scratch"
+                                                                               machine_type = "n1-standard-16"
+                                                                               max_node_count = 5
+                                                                               preemptible_bursting = false
+                                                                               static_node_count = 0
+                                                                               vpc_subnet = google_compute_subnetwork.default_subnet.self_link
+                                                                               zone = var.primary_zone
+                                                                            }]
+                                                              }]
+
+
+
 }
 
 // Create the Slurm-GCP cluster
 module "slurm_gcp" {
   source  = "/workspace/terraform-fluidnumerics-slurm_gcp"
+  controller_image = var.controller_image
+  compute_image = var.compute_image
+  login_image = var.login_image
   parent_folder = var.customer_folder
   slurm_gcp_admins = local.slurm_gcp_admins
   slurm_gcp_users = local.slurm_gcp_users
-  name = var.slurm_gcp_name
-  tags = [var.slurm_gcp_name]
+  name = local.slurm_gcp_name
+  tags = [local.slurm_gcp_name]
   controller = local.controller
   login = local.login
   partitions = var.partitions

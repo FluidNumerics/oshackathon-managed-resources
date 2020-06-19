@@ -15,9 +15,38 @@ variable "managing_domain" {
   default = "fluidnumerics.com"
 }
 
+variable "controller_image" {
+  type = string
+  description = "Image to use for the fluid-slurm-gcp controller"
+  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-centos-v2-4-0"
+}
+
+variable "compute_image" {
+  type = string
+  description = "Image to use for the fluid-slurm-gcp compute instances (all partitions[].machines[])."
+  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-compute-centos-v2-4-0"
+}
+
+variable "login_image" {
+  type = string
+  description = "Image to use for the fluid-slurm-gcp login node"
+  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-centos-v2-4-0"
+}
+
 variable "primary_project" {
   type = string
   description = "Main GCP project ID for the customer's managed solution"
+}
+
+variable "primary_zone" {
+  type = string
+  description = "Main GCP zone for the customer's managed solution"
+}
+
+variable "whitelist_ssh_ips" {
+  type = list(string)
+  description = "Customer's IP addresses that should be added to a whitelist for ssh access"
+  default = ["0.0.0.0/0"]
 }
 
 variable "controller_machine_type" { 
@@ -40,7 +69,6 @@ variable "partitions" {
   type = list(object({
       name = string
       project = string
-      vpc_subnet= string
       max_time= string
       labels = map(string)
       machines = list(object({
@@ -51,6 +79,7 @@ variable "partitions" {
         external_ip = bool
         gpu_count = number
         gpu_type = string
+        image = string
         n_local_ssds = number
         local_ssd_mount_directory = string
         machine_type=string
@@ -58,9 +87,11 @@ variable "partitions" {
         preemptible_bursting= bool
         static_node_count= number
         vpc_subnet = string
-        zone= string    
+        zone= string
       }))
   }))
+  description = "Settings for partitions and compute instances available to the cluster."
+  
   default = []
 }
 
