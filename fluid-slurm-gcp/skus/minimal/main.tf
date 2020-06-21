@@ -158,7 +158,7 @@ module "slurm_gcp" {
   controller_image = var.controller_image
   compute_image = var.compute_image
   login_image = var.login_image
-  parent_folder = var.customer_folder
+  parent_folder = "folders/${var.customer_folder}"
   slurm_gcp_admins = local.slurm_gcp_admins
   slurm_gcp_users = local.slurm_gcp_users
   name = local.slurm_gcp_name
