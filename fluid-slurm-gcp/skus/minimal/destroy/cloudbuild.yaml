@@ -1,19 +1,19 @@
 
 
 steps:
+- id: Clone Fluid-Slurm-GCP
+  name: 'gcr.io/cloud-builders/gcloud'
+  args: ["source", "repos", "clone", "terraform-fluidnumerics-slurm_gcp", "--project=managed-fluid-slurm-gcp"]
+
 - id: terraform destroy - delete Fluid-Slurm-GCP cluster and resources
   name: 'hashicorp/terraform:0.12.26'
   entrypoint: 'sh'
-  args: 
+  args:
   - '-c'
-  - | 
+  - |
       cd fluid-slurm-gcp/skus/minimal
       terraform init
       terraform destroy -auto-approve || exit 1
-
-- id: Remove fluid.auto.tfvars from customer bucket
-  name: 'gcr.io/cloud-builders/gsutil'
-  args: ["rm","gs://managed-fluid-slurm-gcp-customer-tfstates/${_ORG}/fluid-slurm-gcp/fluid.auto.tfvars"]
 
 - id: Remove default.tfstate files from customer bucket
   name: 'gcr.io/cloud-builders/gsutil'
