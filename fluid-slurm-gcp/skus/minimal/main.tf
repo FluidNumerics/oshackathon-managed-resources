@@ -2,7 +2,7 @@
 terraform {
   backend "gcs" {
     bucket  = "managed-fluid-slurm-gcp-customer-tfstates"
-    prefix  = "fn-0000000001/fluid-slurm-gcp"
+    prefix  = "@ORG@/fluid-slurm-gcp"
   }
 }
 
