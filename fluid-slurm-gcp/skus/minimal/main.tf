@@ -25,6 +25,12 @@ resource "google_project_service" "iam" {
   disable_dependent_services = true
 }
 
+resource "google_project_service" "monitoring" {
+  project = var.primary_project
+  service = "monitoring.googleapis.com"
+  disable_dependent_services = true
+}
+
 locals {
   primary_region = trimsuffix(var.primary_zone,substr(var.primary_zone,-2,-2))
   slurm_gcp_admins = ["group:${var.customer_org_id}-slurm-gcp-admins@${var.managing_domain}"]
@@ -122,6 +128,10 @@ resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
 // *************************************************** //
 
 locals {
+  controller_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-${var.image_flavor}-${var.image_version}"
+  login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-${var.image_flavor}-${var.image_version}"
+  compute_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-compute-${var.image_flavor}-${var.image_version}"
+
   controller = {
     machine_type = var.controller_machine_type
     disk_size_gb = 1024
@@ -155,7 +165,7 @@ locals {
                                                                                gpu_count = 0
                                                                                gpu_type = ""
                                                                                n_local_ssds = 0
-                                                                               image = ""
+                                                                               image = local.compute_image
                                                                                local_ssd_mount_directory = "/scratch"
                                                                                machine_type = "n1-standard-16"
                                                                                max_node_count = 5
@@ -171,11 +181,6 @@ locals {
 }
 
 
-local {
-  controller_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-${var.image_flavor}-${var.image_version}"
-  login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-${var.image_flavor}-${var.image_version}"
-  compute_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-compute-${var.image_flavor}-${var.image_version}"
-}
 
 // Create the Slurm-GCP cluster
 module "slurm_gcp" {
@@ -190,7 +195,7 @@ module "slurm_gcp" {
   tags = [local.slurm_gcp_name]
   controller = local.controller
   login = local.login
-  partitions = var.partitions
+  partitions = local.partitions
   slurm_accounts = var.slurm_accounts
 }
 
