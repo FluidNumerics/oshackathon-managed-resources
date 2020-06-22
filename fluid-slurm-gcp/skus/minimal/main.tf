@@ -2,13 +2,27 @@
 terraform {
   backend "gcs" {
     bucket  = "managed-fluid-slurm-gcp-customer-tfstates"
-    prefix  = "@ORG@/fluid-slurm-gcp"
+    prefix  = "fn-0000000001/fluid-slurm-gcp"
   }
 }
 
 // Configure the Google Cloud provider
 provider "google" {
  version = "3.9"
+}
+
+
+// Enable necessary API's
+resource "google_project_service" "compute" {
+  project = var.primary_project
+  service = "compute.googleapis.com"
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "iam" {
+  project = var.primary_project
+  service = "iam.googleapis.com"
+  disable_dependent_services = true
 }
 
 locals {
@@ -21,6 +35,7 @@ locals {
 // Mark the Controller project as the Shared VPC Host Project
 resource "google_compute_shared_vpc_host_project" "host" {
   project = var.primary_project
+  depends_on = [google_project_service.compute,google_project_service.iam]
 }
 
 // Obtain a unique list of projects from the partitions, excluding the host project
@@ -30,9 +45,9 @@ locals {
 
 // Mark the Shared VPC Service Projects
 resource "google_compute_shared_vpc_service_project" "service" {
-  for_each = local.projects
+  count = length(local.projects)
   host_project = var.primary_project
-  service_project = each.key
+  service_project = local.projects[count.index]
   depends_on = [google_compute_shared_vpc_host_project.host]
 }
 
@@ -50,6 +65,7 @@ resource "google_compute_subnetwork" "default_subnet" {
   ip_cidr_range = "10.10.0.0/16"
   region = local.primary_region
   network = google_compute_network.shared_vpc_network.self_link
+  project = var.primary_project
 }
 
 resource "google_compute_firewall" "default_internal_firewall_rules" {
@@ -57,14 +73,15 @@ resource "google_compute_firewall" "default_internal_firewall_rules" {
   network = google_compute_network.shared_vpc_network.self_link
   source_tags = [local.slurm_gcp_name]
   target_tags = [local.slurm_gcp_name]
+  project = var.primary_project
 
   allow {
     protocol = "tcp"
-    ports = [0-65535]
+    ports = ["0-65535"]
   }
   allow {
     protocol = "udp"
-    ports = [0-65535]
+    ports = ["0-65535"]
   }
   allow {
     protocol = "icmp"
@@ -79,10 +96,11 @@ resource "google_compute_firewall" "default_ssh_firewall_rules" {
   network = google_compute_network.shared_vpc_network.self_link
   target_tags = [local.slurm_gcp_name]
   source_ranges = var.whitelist_ssh_ips
+  project = var.primary_project
 
   allow {
     protocol = "tcp"
-    ports = [22]
+    ports = ["22"]
   }
 
 }
@@ -152,12 +170,19 @@ locals {
 
 }
 
+
+local {
+  controller_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-${var.image_flavor}-${var.image_version}"
+  login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-${var.image_flavor}-${var.image_version}"
+  compute_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-compute-${var.image_flavor}-${var.image_version}"
+}
+
 // Create the Slurm-GCP cluster
 module "slurm_gcp" {
   source  = "/workspace/terraform-fluidnumerics-slurm_gcp"
-  controller_image = var.controller_image
-  compute_image = var.compute_image
-  login_image = var.login_image
+  controller_image = local.controller_image
+  compute_image = local.compute_image
+  login_image = local.login_image
   parent_folder = "folders/${var.customer_folder}"
   slurm_gcp_admins = local.slurm_gcp_admins
   slurm_gcp_users = local.slurm_gcp_users

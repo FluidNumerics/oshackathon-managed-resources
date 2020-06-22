@@ -15,22 +15,16 @@ variable "managing_domain" {
   default = "fluidnumerics.com"
 }
 
-variable "controller_image" {
+variable "image_version" {
   type = string
-  description = "Image to use for the fluid-slurm-gcp controller"
-  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-centos-v2-4-0"
+  description = "Image version for the fluid-slurm-gcp images"
+  default = "v2-4-0"
 }
 
-variable "compute_image" {
+variable "image_flavor" {
   type = string
-  description = "Image to use for the fluid-slurm-gcp compute instances (all partitions[].machines[])."
-  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-compute-centos-v2-4-0"
-}
-
-variable "login_image" {
-  type = string
-  description = "Image to use for the fluid-slurm-gcp login node"
-  default = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-centos-v2-4-0"
+  description = "Base Fluid-Slurm-GCP image flavor. One of `centos`, `ohpc`, or `ubuntu`"
+  default = "centos"
 }
 
 variable "primary_project" {
