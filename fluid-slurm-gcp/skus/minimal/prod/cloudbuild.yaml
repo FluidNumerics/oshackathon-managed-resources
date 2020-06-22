@@ -12,7 +12,7 @@ steps:
   - | 
       cd fluid-slurm-gcp/skus/minimal
       terraform init
-      terraform valide || exit 1
+      terraform validate || exit 1
       terraform plan || exit 1
       terraform apply -auto-approve
 
