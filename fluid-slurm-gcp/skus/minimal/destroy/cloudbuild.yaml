@@ -1,8 +1,9 @@
 
 
 steps:
-- id: terraform destroy - delete GSR and Cloud Build triggers
+- id: terraform destroy - delete Fluid-Slurm-GCP cluster and resources
   name: 'hashicorp/terraform:0.12.26'
+  entrypoint: 'sh'
   args: 
   - '-c'
   - | 
