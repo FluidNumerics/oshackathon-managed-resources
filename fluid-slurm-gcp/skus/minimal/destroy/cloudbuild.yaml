@@ -1,0 +1,22 @@
+
+
+steps:
+- id: terraform destroy - delete GSR and Cloud Build triggers
+  name: 'hashicorp/terraform:0.12.26'
+  args: 
+  - '-c'
+  - | 
+      cd fluid-slurm-gcp/skus/minimal
+      terraform init
+      terraform destroy -auto-approve || exit 1
+
+- id: Remove fluid.auto.tfvars from customer bucket
+  name: 'gcr.io/cloud-builders/gsutil'
+  args: ["rm","gs://managed-fluid-slurm-gcp-customer-tfstates/${_ORG}/fluid-slurm-gcp/fluid.auto.tfvars"]
+
+- id: Remove default.tfstate files from customer bucket
+  name: 'gcr.io/cloud-builders/gsutil'
+  args: ["rm", "gs://managed-fluid-slurm-gcp-customer-tfstates/${_ORG}/fluid-slurm-gcp/default.tfstate"]
+
+substitutions:
+  _ORG: 'fluid-numerics' 
