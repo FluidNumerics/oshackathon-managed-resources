@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "managed-fluid-slurm-gcp-customer-tfstates"
-    prefix  = "@ORG@/fluid-slurm-gcp"
+    prefix  = "fluid-demo/fluid-slurm-gcp"
   }
 }
 
@@ -13,7 +13,7 @@ provider "google" {
 provider "google-beta" {
 }
 
-// Enable necessary API's
+// Enable necessary APIs
 resource "google_project_service" "compute" {
   project = var.primary_project
   service = "compute.googleapis.com"
@@ -29,6 +29,24 @@ resource "google_project_service" "iam" {
 resource "google_project_service" "monitoring" {
   project = var.primary_project
   service = "monitoring.googleapis.com"
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "filestore" {
+  project = var.primary_project
+  service = "file.googleapis.com"
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "service_networking" {
+  project = var.primary_project
+  service = "servicenetworking.googleapis.com"
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "sql_admin" {
+  project = var.primary_project
+  service = "sqladmin.googleapis.com"
   disable_dependent_services = true
 }
 
@@ -103,7 +121,7 @@ resource "google_compute_firewall" "default_ssh_firewall_rules" {
   network = google_compute_network.shared_vpc_network.self_link
   target_tags = [local.slurm_gcp_name]
   source_ranges = var.whitelist_ssh_ips
-  project = var.google_compute_network.
+  project = var.primary_project
 
   allow {
     protocol = "tcp"
@@ -114,64 +132,68 @@ resource "google_compute_firewall" "default_ssh_firewall_rules" {
 
 // Create the home filestore instance
 resource "google_filestore_instance" "home_server" {
-  name = "${var.slurm_gcp_name}-home-fs"
+  name = "${local.slurm_gcp_name}-home-fs"
   zone = var.primary_zone
   tier = var.home_tier
   project = var.primary_project
 
   file_shares {
     capacity_gb = var.home_size_gb
-    name        = 'home'
+    name        = "home"
   }
 
   networks {
-    network = google_compute_network.shared_vpc_network.self_link
+    network = google_compute_network.shared_vpc_network.name
     modes   = ["MODE_IPV4"]
   }
+  depends_on = [google_project_service.filestore]
 }
 
 // Create the share filestore instance 
 resource "google_filestore_instance" "share_server" {
   count = var.share_size_gb == 0 ? 0 : 1
-  name = "${var.slurm_gcp_name}-share-fs"
+  name = "${local.slurm_gcp_name}-share-fs"
   zone = var.primary_zone
   tier = var.share_tier
   project = var.primary_project
 
   file_shares {
     capacity_gb = var.share_size_gb
-    name        = 'share'
+    name        = "share"
   }
 
   networks {
-    network = google_compute_network.shared_vpc_network.self_link
+    network = google_compute_network.shared_vpc_network.name
     modes   = ["MODE_IPV4"]
   }
+  depends_on = [google_project_service.filestore]
 }
 
 locals {
-  share_mount = var.share_size_gb == 0 ? {} : {
-                                                group = "root",
-                                                mount_directory = "/mnt/share",
-                                                mount_options = "rw,hard,intr",
-                                                owner = "root",
-                                                protocol = "nfs"
-                                                permission = "755"
-                                                server_directory = "${google_filestore_instance.share_server.networks[0].ip_addresses[0]}:${google_filestore_instance.share_server.file_shares[0].name}"
-                                               }
-  home_mount = {
-                 group = "root",
-                 mount_directory = "/home",
-                 mount_options = "rw,hard,intr",
-                 owner = "root",
-                 protocol = "nfs"
-                 permission = "755"
-                 server_directory = "${google_filestore_instance.home_server.networks[0].ip_addresses[0]}:${google_filestore_instance.home_server.file_shares[0].name}"
-               }
-}
-
-locals {
-  mounts = [home_mount, share_mount]
+  mounts = var.share_size_gb == 0 ? [{group = "root",
+                                      mount_directory = "/home",
+                                      mount_options = "rw,hard,intr",
+                                      owner = "root",
+                                      protocol = "nfs",
+                                      permission = "755",
+                                      server_directory = "${google_filestore_instance.home_server.networks[0].ip_addresses[0]}:/${google_filestore_instance.home_server.file_shares[0].name}"
+                                    }] : [{group = "root",
+                                           mount_directory = "/home",
+                                           mount_options = "rw,hard,intr",
+                                           owner = "root",
+                                           protocol = "nfs",
+                                           permission = "755",
+                                           server_directory = "${google_filestore_instance.home_server.networks[0].ip_addresses[0]}:/${google_filestore_instance.home_server.file_shares[0].name}"
+                                          },
+                                          {group = "root",
+                                           mount_directory = "/mnt/share",
+                                           mount_options = "rw,hard,intr",
+                                           owner = "root",
+                                           protocol = "nfs",
+                                           permission = "755",
+                                           server_directory = "${google_filestore_instance.share_server[0].networks[0].ip_addresses[0]}:/${google_filestore_instance.share_server[0].file_shares[0].name}"
+                                          }
+                                         ]
 }
 
 
@@ -191,20 +213,19 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   network = google_compute_network.shared_vpc_network.id
   service = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
-  project = var.primary_project
+  depends_on = [google_project_service.service_networking]
 }
 
 resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
 
-resource "google_sql_database_instance" "instance" {
+resource "google_sql_database_instance" "slurm_db" {
   provider = google-beta
-
-  name = "$slurm-gcp-${random_id.db_name_suffix.hex}"
-  region = "us-central1"
+  name = "${var.customer_org_id}-slurm-db-${random_id.db_name_suffix.hex}"
+  database_version = "MYSQL_5_6"
+  region = local.primary_region
   project = var.primary_project
-
   depends_on = [google_service_networking_connection.private_vpc_connection]
 
   settings {
@@ -217,9 +238,9 @@ resource "google_sql_database_instance" "instance" {
 }
 
 locals {
-  slurm_db = {'cloudsql_name':google_sql_database_instance.instance.name, 
-              'clouqsql_ip':google_sql_database_instance.name,
-              'cloudsql_port':6819}
+  slurm_db = {"cloudsql_name":google_sql_database_instance.slurm_db.name, 
+              "cloudsql_ip":google_sql_database_instance.slurm_db.private_ip_address,
+              "cloudsql_port":6819}
 }
 
 // Create a list of unique regions from the partitions
@@ -308,6 +329,7 @@ module "slurm_gcp" {
   partitions = local.partitions
   slurm_accounts = var.slurm_accounts
   slurm_db = local.slurm_db
+  mounts = local.mounts
 }
 
 
