@@ -11,9 +11,8 @@ steps:
   - '-c'
   - | 
       cd fluid-slurm-gcp/skus/minimal
-      sed -i "s/@ORG@/${_ORG}/g" main.tf
       terraform init
-      terraform valide || exit 1
+      terraform validate || exit 1
       terraform plan || exit 1
       terraform apply -auto-approve
 
