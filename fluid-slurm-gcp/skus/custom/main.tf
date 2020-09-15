@@ -252,7 +252,7 @@ locals {
 resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
   count = length(local.regions)
   name = "${local.slurm_gcp_name}-${local.regions[count.index]}"
-  ip_cidr_range = cidrsubnet("10.11.0.0/12", 4, count.index) 
+  ip_cidr_range = cidrsubnet("10.11.0.0/16", 0, count.index)
   region = local.regions[count.index]
   network = google_compute_network.shared_vpc_network.self_link
 }
