@@ -18,7 +18,7 @@ variable "managing_domain" {
 variable "image_version" {
   type = string
   description = "Image version for the fluid-slurm-gcp images"
-  default = "v2-4-0"
+  default = "v2-5-0"
 }
 
 variable "image_flavor" {
