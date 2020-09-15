@@ -218,6 +218,7 @@ resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
   ip_cidr_range = cidrsubnet("10.11.0.0/16", 0, count.index)
   region = local.regions[count.index]
   network = google_compute_network.shared_vpc_network.self_link
+  project = var.primary_project
 }
 
 // *************************************************** //
