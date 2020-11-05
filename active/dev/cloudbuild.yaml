@@ -4,15 +4,19 @@ steps:
   name: 'gcr.io/cloud-builders/gcloud'
   args: ["source", "repos", "clone", "terraform-fluidnumerics-slurm_gcp", "--project=managed-fluid-slurm-gcp"]
 
-- id: Terraform plan and apply
+- id: Terraform plan
   name: 'hashicorp/terraform:0.12.26'
   entrypoint: 'sh'
   args: 
   - '-c'
   - | 
-      cd fluid-slurm-gcp/active
+      cd active
+      sed -i "s/@ORG@/${_ORG}/g" main.tf
       terraform init
       terraform validate || exit 1
       terraform plan || exit 1
-      terraform apply -auto-approve
+
+
+substitutions:
+  _ORG: 'default'
 
