@@ -6,6 +6,7 @@ steps:
   args: 
   - '-c'
   - | 
+      cd active
       terraform init
       terraform validate || exit 1
       terraform plan || exit 1
