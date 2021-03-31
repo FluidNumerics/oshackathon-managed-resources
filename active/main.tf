@@ -103,7 +103,7 @@ locals {
 // Create any additional shared VPC subnetworks
 resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
   count = length(local.regions)
-  name = "${local.cluster_name}-${local.regions[count.index]}"
+  name = "${local.cluster_name}"
   ip_cidr_range = cidrsubnet("10.10.0.0/8", 8, count.index+11)
   region = local.regions[count.index]
   network = google_compute_network.shared_vpc_network.self_link
@@ -189,7 +189,7 @@ locals {
                                                                                    max_node_count = m.max_node_count
                                                                                    preemptible_bursting = m.preemptible_bursting
                                                                                    static_node_count = 0
-                                                                                   vpc_subnet = local.zoneToSubnet[m.zone]
+                                                                                   vpc_subnet = "projects/${var.primary_project}/regions/${trimsuffix(m.zone,substr(m.zone,-2,-2))}/subnetworks/${var.cluster_name}",
                                                                                    zone = (m.zone == "") ? var.primary_zone : m.zone }]}] 
                                             
 
