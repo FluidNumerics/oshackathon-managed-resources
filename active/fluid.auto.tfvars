@@ -16,7 +16,7 @@ partitions = [{name = "n1-8-solo-v100"
                              gpu_type = "nvidia-tesla-v100"
                              image = ""
                              machine_type = "n1-standard-8"
-                             max_node_count = 10
+                             max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-a"
                            },
@@ -26,7 +26,7 @@ partitions = [{name = "n1-8-solo-v100"
                              gpu_type = "nvidia-tesla-v100"
                              image = ""
                              machine_type = "n1-standard-8"
-                             max_node_count = 10
+                             max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-b"
                           }
@@ -42,7 +42,7 @@ partitions = [{name = "n1-8-solo-v100"
                              gpu_type = "nvidia-tesla-v100"
                              image = ""
                              machine_type = "n1-standard-8"
-                             max_node_count = 10
+                             max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-a"
                            },
@@ -52,7 +52,7 @@ partitions = [{name = "n1-8-solo-v100"
                              gpu_type = "nvidia-tesla-v100"
                              image = ""
                              machine_type = "n1-standard-8"
-                             max_node_count = 10
+                             max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-b"
                           }
@@ -100,7 +100,7 @@ partitions = [{name = "n1-8-solo-v100"
                              gpu_type = ""
                              image = ""
                              machine_type = "n1-standard-4"
-                             max_node_count = 30
+                             max_node_count = 10
                              preemptible_bursting = false
                              zone = "us-west1-a"
                            }
