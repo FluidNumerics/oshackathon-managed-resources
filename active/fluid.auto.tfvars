@@ -1,4 +1,4 @@
-cluster_name = "@ORG@"
+cluster_name = "os-hackathon-fluid-hpc"
 primary_project = "@PROJECT ID@"
 primary_zone = "@ZONE@"
 
@@ -24,8 +24,8 @@ partitions = [{name = "demo"
 
 
 
-slurm_gcp_admins = ["group:@ORG@-admins@example.com"]
-slurm_gcp_users = ["user:@ORG@-users@example.com"]
+slurm_gcp_admins = ["group:os-hackathon-fluid-hpc-admins@example.com"]
+slurm_gcp_users = ["user:os-hackathon-fluid-hpc-users@example.com"]
 
 slurm_accounts = [{ name = "demo-account",
                     users = ["somebody"]

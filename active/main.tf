@@ -1,7 +1,7 @@
 //Uncomment the terraform block below to enable GCS backend for maintaining terraform state
 terraform {
   backend "gcs" {
-    bucket  = "@BUCKET_URI@"
+    bucket  = "os-hackathon-fluid-hpc-tf-states"
     prefix  = "fluid-slurm-gcp"
   }
 }
