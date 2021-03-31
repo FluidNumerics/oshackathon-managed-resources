@@ -5,7 +5,7 @@ steps:
   args: ["source", "repos", "clone", "terraform-fluidnumerics-slurm_gcp", "--project=managed-fluid-slurm-gcp"]
 
 - id: Terraform plan and apply
-  name: 'hashicorp/terraform:0.12.26'
+  name: 'hashicorp/terraform:0.14.7'
   entrypoint: 'sh'
   args: 
   - '-c'
