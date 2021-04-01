@@ -13,25 +13,6 @@ provider "google" {
 provider "google-beta" {
 }
 
-// Enable necessary APIs
-resource "google_project_service" "compute" {
-  project = var.primary_project
-  service = "compute.googleapis.com"
-  disable_dependent_services = true
-}
-
-resource "google_project_service" "monitoring" {
-  project = var.primary_project
-  service = "monitoring.googleapis.com"
-  disable_dependent_services = true
-}
-
-resource "google_project_service" "service_networking" {
-  project = var.primary_project
-  service = "servicenetworking.googleapis.com"
-  disable_dependent_services = true
-}
-
 locals {
   primary_region = trimsuffix(var.primary_zone,substr(var.primary_zone,-2,-2))
   cluster_name = "${var.cluster_name}"
