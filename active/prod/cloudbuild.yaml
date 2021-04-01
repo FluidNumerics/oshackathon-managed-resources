@@ -1,9 +1,5 @@
 
 steps:
-- id: Clone Fluid-Slurm-GCP
-  name: 'gcr.io/cloud-builders/gcloud'
-  args: ["source", "repos", "clone", "terraform-fluidnumerics-slurm_gcp", "--project=managed-fluid-slurm-gcp"]
-
 - id: Terraform plan and apply
   name: 'hashicorp/terraform:0.14.7'
   entrypoint: 'sh'
@@ -16,7 +12,7 @@ steps:
       terraform plan || exit 1
       terraform apply -auto-approve
 
-- id: Restart the controller and login
-  name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: "/bin/bash"
-  args: ["tools/restart-instances.sh"]
+#- id: Restart the controller and login
+#  name: 'gcr.io/cloud-builders/gcloud'
+#  entrypoint: "/bin/bash"
+#  args: ["tools/restart-instances.sh"]
