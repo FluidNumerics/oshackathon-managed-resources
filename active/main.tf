@@ -76,15 +76,12 @@ resource "google_compute_firewall" "default_ssh_firewall_rules" {
 // Create a list of unique regions from the partitions
 locals {
   regions = distinct(flatten([for p in var.partitions : [for m in p.machines : trimsuffix(m.zone,substr(m.zone,-2,-2))]]))
-  flatRegions = flatten([for p in var.partitions : [for m in p.machines : trimsuffix(m.zone,substr(m.zone,-2,-2))]])
-  flatZones = flatten([for p in var.partitions : [for m in p.machines : m.zone]])
-  regionToZone = zipmap(local.flatRegions,local.flatZones)
 }
 
 // Create any additional shared VPC subnetworks
 resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
   count = length(local.regions)
-  name = "${local.cluster_name}"
+  name = local.cluster_name
   ip_cidr_range = cidrsubnet("10.10.0.0/8", 8, count.index+11)
   region = local.regions[count.index]
   network = google_compute_network.shared_vpc_network.self_link
@@ -93,7 +90,7 @@ resource "google_compute_subnetwork" "shared_vpc_subnetworks" {
 
 // Create a map that takes in zone and returns subnet (for partition creation)
 locals {
-  zoneToSubnet = {for s in google_compute_subnetwork.shared_vpc_subnetworks : local.regionToZone[s.region] => s.self_link}
+  regionToSubnet = {for s in google_compute_subnetwork.shared_vpc_subnetworks : s.region => s.self_link}
 }
 
 // *************************************************** //
@@ -170,7 +167,7 @@ locals {
                                                                                    max_node_count = m.max_node_count
                                                                                    preemptible_bursting = m.preemptible_bursting
                                                                                    static_node_count = 0
-                                                                                   vpc_subnet = "projects/${var.primary_project}/regions/${trimsuffix(m.zone,substr(m.zone,-2,-2))}/subnetworks/${var.cluster_name}",
+                                                                                   vpc_subnet = local.regionToSubnet[trimsuffix(m.zone,substr(m.zone,-2,-2))],
                                                                                    zone = (m.zone == "") ? var.primary_zone : m.zone }]}] 
                                             
 
