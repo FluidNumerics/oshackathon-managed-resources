@@ -89,7 +89,7 @@ partitions = [{name = "n1-8-solo-v100"
                              zone = "us-west1-a"
                            },
                          ]
-               },
+              },
               {name = "n1-standard-4"
                project = ""
                max_time = "8:00:00"
@@ -105,7 +105,23 @@ partitions = [{name = "n1-8-solo-v100"
                              zone = "us-west1-a"
                            }
                          ]
-               }
+              },
+              {name = "paraview"
+               project = ""
+               max_time = "8:00:00"
+               labels = {"slurm-gcp"="compute"}
+               machines = [{ name = "paraview"
+                             disk_size_gb = 100
+                             gpu_count = 0
+                             gpu_type = ""
+                             image = "projects/fluid-cluster-ops/global/images/paraview-gcp"
+                             machine_type = "c2-standard-60"
+                             max_node_count = 5
+                             preemptible_bursting = false
+                             zone = "us-west1-a"
+                           }
+                         ]
+              },
 ]
 
 
@@ -116,7 +132,12 @@ slurm_gcp_users = ["group:os-hackathon-users@fluidnumerics.cloud"]
 slurm_accounts = [{ name = "hiphack",
                     users = ["joe","alessandro","renault"]
                     allowed_partitions = ["n1-8-solo-v100","n1-8-solo-p100","n2d-standard-224","c2-standard-60","n1-standard-4"]
-                 }]
+                  },
+                  { name = "viz",
+                    users = ["joe","cory"]
+                    allowed_partitions = ["n1-standard-4","paraview"]
+                  }
+]
  
 // Settings for CloudSQL as Slurm database
 cloudsql_slurmdb = true

@@ -12,7 +12,20 @@ steps:
       terraform plan || exit 1
       terraform apply -auto-approve
 
-#- id: Restart the controller and login
-#  name: 'gcr.io/cloud-builders/gcloud'
-#  entrypoint: "/bin/bash"
-#  args: ["tools/restart-instances.sh"]
+- id: Update cluster
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: "/bin/bash"
+  args:
+  - '-c'
+  - |
+      sleep 30
+      ssh-keygen -b 2048 -t rsa -f /tmp/sshkey -q -N ""
+
+      gcloud compute ssh oshackathon-slurm-controller --zone=us-west1-b \
+                                                      --ssh-key-file=/tmp/sshkey \
+                                                      --command="sudo -i /apps/cls/bin/cluster-services update config"
+
+      gcloud compute ssh oshackathon-slurm-controller --zone=us-west1-b \
+                                                      --ssh-key-file=/tmp/sshkey \
+                                                      --command="sudo -i /apps/cls/bin/cluster-services update all"
+
