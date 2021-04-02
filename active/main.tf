@@ -15,7 +15,7 @@ provider "google-beta" {
 
 locals {
   primary_region = trimsuffix(var.primary_zone,substr(var.primary_zone,-2,-2))
-  cluster_name = "${var.cluster_name}"
+  cluster_name = var.cluster_name
 }
 
 // Obtain a unique list of projects from the partitions, excluding the host project
