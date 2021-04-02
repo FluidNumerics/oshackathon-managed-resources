@@ -9,7 +9,7 @@ login_machine_type = "n1-standard-8"
 partitions = [{name = "n1-8-solo-v100"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="hiphack"}
                machines = [{ name = "n1-8-solo-v100-a"
                              disk_size_gb = 30
                              gpu_count = 1
@@ -35,7 +35,7 @@ partitions = [{name = "n1-8-solo-v100"
               {name = "n1-8-solo-p100"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="hiphack"}
                machines = [{ name = "n1-8-solo-p100-a"
                              disk_size_gb = 30
                              gpu_count = 1
@@ -61,7 +61,7 @@ partitions = [{name = "n1-8-solo-v100"
               {name = "n2d-standard-224"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="hiphack"}
                machines = [{ name = "n2d-standard-224"
                              disk_size_gb = 30
                              gpu_count = 0
@@ -77,7 +77,7 @@ partitions = [{name = "n1-8-solo-v100"
               {name = "c2-standard-60"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="hiphack"}
                machines = [{ name = "c2-standard-60"
                              disk_size_gb = 30
                              gpu_count = 0
@@ -93,7 +93,7 @@ partitions = [{name = "n1-8-solo-v100"
               {name = "n1-standard-4"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="hiphack"}
                machines = [{ name = "n1-standard-4"
                              disk_size_gb = 30
                              gpu_count = 0
@@ -109,7 +109,7 @@ partitions = [{name = "n1-8-solo-v100"
               {name = "paraview"
                project = ""
                max_time = "8:00:00"
-               labels = {"slurm-gcp"="compute"}
+               labels = {"hackathon"="cloud-cfd"}
                machines = [{ name = "paraview"
                              disk_size_gb = 100
                              gpu_count = 0
