@@ -11,20 +11,20 @@ partitions = [{name = "n1-8-solo-v100"
                max_time = "8:00:00"
                labels = {"hackathon"="hiphack"}
                machines = [{ name = "n1-8-solo-v100-a"
-                             disk_size_gb = 30
+                             disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = ""
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-a"
                            },
                            { name = "n1-8-solo-v100-b"
-                             disk_size_gb = 30
+                             disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = ""
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
@@ -37,20 +37,20 @@ partitions = [{name = "n1-8-solo-v100"
                max_time = "8:00:00"
                labels = {"hackathon"="hiphack"}
                machines = [{ name = "n1-8-solo-p100-a"
-                             disk_size_gb = 30
+                             disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = ""
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
                              zone = "us-west1-a"
                            },
                            { name = "n1-8-solo-p100-b"
-                             disk_size_gb = 30
+                             disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = ""
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
