@@ -40,7 +40,7 @@ partitions = [{name = "n1-8-solo-v100"
                              disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
@@ -50,7 +50,7 @@ partitions = [{name = "n1-8-solo-v100"
                              disk_size_gb = 50
                              gpu_count = 1
                              gpu_type = "nvidia-tesla-v100"
-                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
                              machine_type = "n1-standard-8"
                              max_node_count = 5
                              preemptible_bursting = false
