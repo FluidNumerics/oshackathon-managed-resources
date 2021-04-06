@@ -196,8 +196,3 @@ module "slurm_gcp" {
   slurm_accounts = var.slurm_accounts
   mounts = []
 }
-
-
-
-
-
