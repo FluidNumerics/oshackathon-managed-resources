@@ -141,5 +141,5 @@ slurm_accounts = [{ name = "hiphack",
  
 // Settings for CloudSQL as Slurm database
 cloudsql_slurmdb = true
-//cloudsql_name = "slurmdb"
+cloudsql_name = "oshpc"
 cloudsql_tier = "db-n1-standard-1"
