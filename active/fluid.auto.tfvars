@@ -1,4 +1,4 @@
-cluster_name = "oshackathon-slurm"
+cluster_name = "oshpc"
 primary_project = "os-hackathon-fluid-hpc"
 primary_zone = "us-west1-b"
 
