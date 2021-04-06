@@ -182,6 +182,7 @@ module "slurm_gcp" {
   cloudsql_network = google_compute_network.shared_vpc_network.self_link
   cloudsql_slurmdb = var.cloudsql_slurmdb
   cloudsql_tier = var.cloudsql_tier
+  cloudsql_enable_ipv4 = true
   controller_image = var.controller_image
   compute_image = var.compute_image
   login_image = var.login_image
