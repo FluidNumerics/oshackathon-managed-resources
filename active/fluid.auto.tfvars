@@ -6,33 +6,7 @@ controller_machine_type = "n1-standard-2"
 controller_disk_size_gb = 1024
 login_machine_type = "n1-standard-2"
 
-partitions = [{name = "a2-highpu-1g"
-               project = ""
-               max_time = "8:00:00"
-               labels = {"hackathon"="hiphack"}
-               machines = [{ name = "a2-1g-a100"
-                             disk_size_gb = 100
-                             gpu_count = 1
-                             gpu_type = "nvidia-tesla-a100"
-                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
-                             machine_type = "a2-highgpu-1g"
-                             max_node_count = 5
-                             preemptible_bursting = false
-                             zone = "us-central1-a"
-                           },
-                           { name = "n1-8-solo-v100-b"
-                             disk_size_gb = 100
-                             gpu_count = 1
-                             gpu_type = "nvidia-tesla-v100"
-                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
-                             machine_type = "n1-standard-8"
-                             max_node_count = 5
-                             preemptible_bursting = false
-                             zone = "us-west1-b"
-                          }
-                         ]
-              },
-              {name = "n1-8-solo-v100"
+partitions = [{name = "n1-8-solo-v100"
                project = ""
                max_time = "8:00:00"
                labels = {"hackathon"="hiphack"}
@@ -82,6 +56,22 @@ partitions = [{name = "a2-highpu-1g"
                              preemptible_bursting = false
                              zone = "us-west1-b"
                           }
+                         ]
+              },
+              {name = "a2-highpu-1g"
+               project = ""
+               max_time = "8:00:00"
+               labels = {"hackathon"="hiphack"}
+               machines = [{ name = "a2-1g-a100"
+                             disk_size_gb = 100
+                             gpu_count = 1
+                             gpu_type = "nvidia-tesla-a100"
+                             image = "projects/os-hackathon-fluid-hpc/global/images/fluid-slurm-gcp-compute-os-hack-dev"
+                             machine_type = "a2-highgpu-1g"
+                             max_node_count = 5
+                             preemptible_bursting = false
+                             zone = "us-central1-a"
+                           }
                          ]
               },
               {name = "n2d-standard-224"
@@ -156,7 +146,7 @@ slurm_gcp_admins = ["group:support@fluidnumerics.com"]
 slurm_gcp_users = ["group:os-hackathon-users@fluidnumerics.cloud"]
 
 slurm_accounts = [{ name = "oshackathon",
-                    users = ["joe","alessandro","renault","cory]
+                    users = ["joe","alessandro","renault","cory"]
                     allowed_partitions = ["all"]
                   }
 ]
