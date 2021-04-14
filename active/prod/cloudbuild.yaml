@@ -25,10 +25,4 @@ steps:
                                                       --ssh-key-file=/tmp/sshkey \
                                                       --command="sudo -i /apps/cls/bin/cluster-services update config"
 
-      gcloud compute ssh oshackathon-slurm-controller --zone=us-west1-b \
-                                                      --ssh-key-file=/tmp/sshkey \
-                                                      --command="sudo -i /apps/cls/bin/cluster-services update partitions"
-
-      gcloud compute ssh oshackathon-slurm-controller --zone=us-west1-b \
-                                                      --ssh-key-file=/tmp/sshkey \
-                                                      --command="sudo -i /apps/cls/bin/cluster-services update slurm_accounts"
+      for i in $(gcloud compute os-login ssh-keys list); do echo $i; gcloud compute os-login ssh-keys remove --key $i; done
