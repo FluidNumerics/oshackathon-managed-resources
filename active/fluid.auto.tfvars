@@ -4,6 +4,7 @@ primary_zone = "us-west1-b"
 
 controller_machine_type = "n1-standard-2"
 controller_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-centos-dev"
+login_machine_type = "n1-standard-32"
 login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-centos-dev"
 
 controller_disk_size_gb = 1024
