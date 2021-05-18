@@ -8,7 +8,6 @@ login_machine_type = "n1-standard-32"
 login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-centos-dev"
 
 controller_disk_size_gb = 1024
-login_machine_type = "n1-standard-2"
 
 partitions = [{name = "v100-gpu"
                project = ""
