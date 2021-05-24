@@ -103,7 +103,7 @@ locals {
     image = var.controller_image
     labels = {"slurm-gcp"="controller"}
     project = var.primary_project
-    public_ips = false
+    public_ips = true
     region = local.primary_region
     vpc_subnet = google_compute_subnetwork.default_subnet.self_link
     zone = var.primary_zone
