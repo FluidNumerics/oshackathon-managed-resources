@@ -2,9 +2,9 @@ cluster_name = "oshpc"
 primary_project = "os-hackathon-fluid-hpc"
 primary_zone = "us-west1-b"
 
-controller_machine_type = "n1-standard-64"
+controller_machine_type = "n1-standard-2"
 controller_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-controller-centos-dev"
-login_machine_type = "n1-standard-96"
+login_machine_type = "n1-standard-2"
 login_image = "projects/fluid-cluster-ops/global/images/fluid-slurm-gcp-login-centos-dev"
 
 controller_disk_size_gb = 1024
@@ -155,14 +155,10 @@ slurm_gcp_users = ["group:os-hackathon-users@ocean.waterchange.org"]
 slurm_accounts = [{ name = "oshackathon",
                     users = ["joe"]
                     allowed_partitions = ["all"]
-                  },
-                  { name = "ornl",
-                    users = ["joe","nmalaya","paul"]
-                    allowed_partitions = ["v100-gpu","p100-gpu","n1-standard-4"]
                   }
 ]
  
 // Settings for CloudSQL as Slurm database
 cloudsql_slurmdb = true
 cloudsql_name = "oshpc"
-cloudsql_tier = "db-n1-standard-16"
+cloudsql_tier = "db-n1-standard-1"
