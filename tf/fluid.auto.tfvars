@@ -1,5 +1,5 @@
 cluster_name = "ocean"
-project = "oshackathon-fluid-hpc"
+project = "os-hackathon-fluid-hpc"
 zone = "us-west1-b"
 cloudsql_slurmdb = true
 
