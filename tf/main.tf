@@ -130,7 +130,7 @@ resource "google_compute_subnetwork" "default_subnet" {
 resource "google_compute_firewall" "default_internal_firewall_rules" {
   name = "${var.cluster_name}-all-internal"
   network = google_compute_network.shared_vpc_network.self_link
-  source_tags = [var.cluster_name]
+  source_tags = [var.cluster_name,"compute","login","controller"]
   target_tags = [var.cluster_name]
   project = var.project
 

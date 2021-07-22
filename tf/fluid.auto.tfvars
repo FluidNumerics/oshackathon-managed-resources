@@ -75,7 +75,7 @@ partitions = [
   }
 ]
 
-disable_controller_public_ips = true
+disable_controller_public_ips = false
 disable_login_public_ips      = false
 disable_compute_public_ips    = true
 
