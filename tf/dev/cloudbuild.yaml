@@ -1,0 +1,13 @@
+
+steps:
+- id: Terraform plan
+  name: 'hashicorp/terraform:0.12.26'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      cd tf/
+      terraform init
+      terraform validate || exit 1
+      terraform plan -replace="module.slurm_cluster_controller.google_compute_instance.controller_node[0]" \
+                     -replace="module.slurm_cluster_login.google_compute_instance.login_node[0]" || exit 1
