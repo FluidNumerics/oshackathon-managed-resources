@@ -4,7 +4,7 @@ zone = "us-west1-b"
 cloudsql_slurmdb = true
 
 slurm_gcp_admins = ["group:support@fluidnumerics.com"]
-slurm_gcp_users = ["user:joe@@fluidnumerics.com"]
+slurm_gcp_users = ["user:joe@fluidnumerics.com"]
 
 partitions = [
   { name                 = "c2"
