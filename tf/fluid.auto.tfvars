@@ -9,7 +9,7 @@ slurm_gcp_users = ["user:joe@fluidnumerics.com"]
 partitions = [
   { name                 = "c2"
     machine_type         = "c2-standard-60"
-    image                = "projects/os-hackathon-fluid-hpc/global/images/oshackathon-slurm-gcp"
+    image                = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
     image_hyperthreads   = true
     static_node_count    = 0
     max_node_count       = 10
@@ -31,7 +31,7 @@ partitions = [
   },
   { name                 = "v100"
     machine_type         = "n1-custom-12-9216"
-    image                = "projects/os-hackathon-fluid-hpc/global/images/oshackathon-slurm-gcp"
+    image                = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
     image_hyperthreads   = true
     static_node_count    = 0
     max_node_count       = 10
@@ -53,7 +53,7 @@ partitions = [
   },
   { name                 = "p100"
     machine_type         = "n1-custom-12-9216"
-    image                = "projects/os-hackathon-fluid-hpc/global/images/oshackathon-slurm-gcp"
+    image                = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
     image_hyperthreads   = true
     static_node_count    = 0
     max_node_count       = 10
@@ -80,7 +80,7 @@ disable_login_public_ips      = false
 disable_compute_public_ips    = true
 
 
-controller_image = "projects/os-hackathon-fluid-hpc/global/images/oshackathon-slurm-gcp"
+controller_image = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
 controller_machine_type = "n1-standard-8"
 controller_disk_size_gb = 1024
 login_machine_type = "n1-standard-8"
