@@ -84,7 +84,7 @@ controller_image = "projects/os-hackathon-fluid-hpc/global/images/family/oshacka
 controller_machine_type = "n1-standard-8"
 controller_disk_size_gb = 1024
 login_machine_type = "n1-standard-8"
-loging_image = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
+login_image = "projects/os-hackathon-fluid-hpc/global/images/family/oshackathon-slurm-gcp"
 
 compute_node_scopes          = [
   "https://www.googleapis.com/auth/cloud-platform"
