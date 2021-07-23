@@ -131,7 +131,7 @@ resource "google_compute_firewall" "default_internal_firewall_rules" {
   name = "${var.cluster_name}-all-internal"
   network = google_compute_network.shared_vpc_network.self_link
   source_tags = [var.cluster_name,"compute","login","controller"]
-  target_tags = [var.cluster_name]
+  target_tags = [var.cluster_name,"compute","login","controller"]
   project = var.project
 
   allow {
@@ -151,7 +151,7 @@ resource "google_compute_firewall" "default_internal_firewall_rules" {
 resource "google_compute_firewall" "default_ssh_firewall_rules" {
   name = "${var.cluster_name}-ssh"
   network = google_compute_network.shared_vpc_network.self_link
-  target_tags = [var.cluster_name]
+  target_tags = [var.cluster_name,"login","controller"]
   source_ranges = var.whitelist_ssh_ips
   project = var.project
 
